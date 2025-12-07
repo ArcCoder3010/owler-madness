@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h3>Madness Overlay</h3>
+
+<input id="text1" placeholder="Text 1"><br><br>
+<input id="text2" placeholder="Text 2"><br><br>
+<input id="text3" placeholder="Text 3"><br><br>
+
+<label>Border Color</label><br>
+<input type="color" id="colorPicker"><br><br>
+
+<button id="activate">Activate</button>
+<button id="deactivate">Deactivate</button>
+
+<script type="module">
+  import OBR from "https://cdn.skypack.dev/@owlbear-rodeo/sdk";
+
+  const t1 = document.getElementById("text1");
+  const t2 = document.getElementById("text2");
+  const t3 = document.getElementById("text3");
+  const color = document.getElementById("colorPicker");
+
+  document.getElementById("activate").onclick = async () => {
+    await OBR.broadcast.sendMessage("madness:start", {
+      t1: t1.value,
+      t2: t2.value,
+      t3: t3.value,
+      color: color.value
+    });
+  };
+
+  document.getElementById("deactivate").onclick = async () => {
+    await OBR.broadcast.sendMessage("madness:stop", {});
+  };
+</script>
+
+</body>
+</html>
