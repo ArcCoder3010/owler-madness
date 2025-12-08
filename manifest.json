@@ -3,6 +3,7 @@
   "name": "Color Border Overlay",
   "version": "1.0.0",
   "action": {
-    "title": "Color Border"
+    "title": "Color Border",
+    "icon": "/icon.svg"
   }
 }
