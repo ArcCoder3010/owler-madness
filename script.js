@@ -1,4 +1,4 @@
-import OBR from "https://unpkg.com/@owlbear-rodeo/sdk?module";
+import OBR from "https://cdn.jsdelivr.net/npm/@owlbear-rodeo/sdk/+esm";;
 
 (async () => {
   try {
