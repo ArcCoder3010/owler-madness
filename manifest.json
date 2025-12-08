@@ -1,11 +1,11 @@
 {
   "manifest_version": 1,
   "name": "Color Border Overlay",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "action": {
     "title": "Color Border",
-    "icon": "icon.svg",
-    "popover": "index.html",
+    "icon": "/owler-madness/icon.svg",
+    "popover": "/owler-madness/index.html",
     "width": 300,
     "height": 260
   }
