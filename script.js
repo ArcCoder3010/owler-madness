@@ -6,7 +6,7 @@ import OBR from "https://cdn.jsdelivr.net/npm/@owlbear-rodeo/sdk/+esm";;
 
     await OBR.onReady();
 
-    console.log("OBR Ready");
+    console.log("OBR Ready!");
 
     // Tenta notificar quando o plugin carrega
     try {
