@@ -42,26 +42,31 @@ OBR.scene.onMetadataChange(async (meta) => {
 async function applyOverlay(color) {
   await clearOverlay();
 
-  // Usando imagem de borda
+  const svg = `
+  <svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024">
+    <rect x="0" y="0" width="1024" height="1024"
+          fill="none"
+          stroke="${color}"
+          stroke-width="40"/>
+  </svg>
+  `;
+
+  const encoded = btoa(svg);
+
   await OBR.scene.local.addItems([
     {
       id: OVERLAY_ID,
       type: "IMAGE",
       image: {
-        url: "https://webstockreview.net/images/white-square-border-png.png"
+        url: `data:image/svg+xml;base64,${encoded}`
       },
       width: 100000,
-      height: 100000,
-      style: {
-        opacity: 1,
-        tint: color
-      }
+      height: 100000
     }
   ]);
 
-  await OBR.notification.show("Overlay aplicado!", "INFO");
+  await OBR.notification.show("Borda aplicada!", "INFO");
 }
-
 async function clearOverlay() {
   await OBR.scene.local.deleteItems([OVERLAY_ID]);
 }
