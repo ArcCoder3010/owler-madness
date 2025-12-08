@@ -6,9 +6,10 @@
   "action": {
     "title": "Madness Effect",
     "icon": "/icon.png",
-    "url": "/index.html",
-    "height": 420
-  },
 
-  "background_url": "/effect.html"
+    "popover": {
+      "url": "/index.html",
+      "height": 420
+    }
+  }
 }
