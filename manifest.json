@@ -1,9 +1,12 @@
 {
   "manifest_version": 1,
   "name": "Color Border Overlay",
-  "version": "1.0.1",
+  "version": "1.0.0",
   "action": {
     "title": "Color Border",
-    "icon": "/icon.svg"
+    "icon": "/icon.svg",
+    "popover": "/index.html",
+    "width": 300,
+    "height": 260
   }
 }
