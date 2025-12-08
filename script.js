@@ -1,52 +1,47 @@
 import OBR from "https://unpkg.com/@owlbear-rodeo/sdk?module";
 
-(async () => {
-  try {
-    await OBR.onReady();
+await OBR.onReady();
 
-    const btn = document.getElementById("activate");
-    const picker = document.getElementById("colorPicker");
+const btn = document.getElementById("activate");
+const picker = document.getElementById("colorPicker");
 
-    await OBR.notification.show("SDK Ready", "INFO");
+// Overlay principal
+const OVERLAY_ID = "debug-overlay";
 
-    btn.onclick = async () => {
-      await OBR.notification.show("Button Clicked", "INFO");
+btn.onclick = async () => {
+  const color = picker.value;
 
-      const color = picker.value;
+  // Aplica overlay
+  await applyBorder(color);
+};
 
-      await OBR.notification.show("Cor: " + color, "INFO");
+async function applyBorder(color) {
+  await clearOverlay();
 
-      await testOverlay(color);
-    };
+  const svg = `
+  <svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000">
+    <rect x="10" y="10" width="980" height="980"
+          fill="none"
+          stroke="${color}"
+          stroke-width="50"/>
+  </svg>
+  `;
 
-    async function testOverlay(color) {
-      const svg = `
-      <svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024">
-        <rect x="0" y="0" width="1024" height="1024"
-              fill="none"
-              stroke="${color}"
-              stroke-width="50"/>
-      </svg>
-      `;
+  const encoded = btoa(svg);
 
-      const encoded = btoa(svg);
-
-      await OBR.scene.local.addItems([
-        {
-          id: "debug-overlay",
-          type: "IMAGE",
-          image: {
-            url: "data:image/svg+xml;base64," + encoded
-          },
-          width: 5000,
-          height: 5000
-        }
-      ]);
-
-      await OBR.notification.show("Overlay attempt done", "INFO");
+  await OBR.scene.local.addItems([
+    {
+      id: OVERLAY_ID,
+      type: "IMAGE",
+      image: {
+        url: "data:image/svg+xml;base64," + encoded
+      },
+      width: 20000,
+      height: 20000
     }
-  } catch (err) {
-    console.error("Erro no plugin:", err);
-    alert("Erro: " + err.message);
-  }
-})();
+  ]);
+}
+
+async function clearOverlay() {
+  await OBR.scene.local.deleteItems([OVERLAY_ID]);
+}
