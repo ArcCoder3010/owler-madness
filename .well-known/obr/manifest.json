@@ -1,1 +1,12 @@
+{
+  "manifest_version": 1,
+  "name": "Owlbear Madness Overlay",
+  "version": "1.0.0",
+
+  "action": {
+    "title": "Madness Effect",
+    "icon": "/icon.png",
+    "popover": "/index.html"
+  }
+}
 
