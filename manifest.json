@@ -4,8 +4,8 @@
   "version": "1.0.1",
   "action": {
     "title": "Color Border",
-    "icon": "/icon.svg",
-    "popover": "/index.html",
+    "icon": "/owler-madness/icon.svg",
+    "popover": "/owler-madness/index.html",
     "width": 300,
     "height": 260
   }
