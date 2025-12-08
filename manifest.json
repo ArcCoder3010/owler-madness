@@ -1,0 +1,8 @@
+{
+  "manifest_version": 1,
+  "name": "Color Border Overlay",
+  "version": "1.0.0",
+  "action": {
+    "title": "Color Border"
+  }
+}
