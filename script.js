@@ -43,7 +43,7 @@ async function applySolidTint(color) {
   const encoded = btoa(svg);
 
   try {
-    await OBR.notification.show("ADDING OVERLAY TO SCENE", "INFO");
+    await OBR.notification.show("ADDING OVERLAY TO SCENE!", "INFO");
   } catch {}
 
   await OBR.scene.local.addItems([
