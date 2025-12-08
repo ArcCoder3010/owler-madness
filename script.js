@@ -1,72 +1,52 @@
-import OBR from "https://cdn.jsdelivr.net/npm/@owlbear-rodeo/sdk/+esm";
+import OBR from "https://unpkg.com/@owlbear-rodeo/sdk?module";
 
-await OBR.onReady();
+(async () => {
+  try {
+    await OBR.onReady();
 
-const btn = document.getElementById("activate");
-const picker = document.getElementById("colorPicker");
+    const btn = document.getElementById("activate");
+    const picker = document.getElementById("colorPicker");
 
-const OVERLAY_ID = "color-border-overlay";
+    await OBR.notification.show("SDK Ready", "INFO");
 
-// Debug inicial para confirmar que o plugin carregou
-OBR.notification.show("Plugin carregado!", "INFO");
+    btn.onclick = async () => {
+      await OBR.notification.show("Button Clicked", "INFO");
 
-btn.onclick = async () => {
-  const role = await OBR.player.getRole();
+      const color = picker.value;
 
-  // Debug ao clicar
-  await OBR.notification.show("Hello World!", "SUCCESS");
+      await OBR.notification.show("Cor: " + color, "INFO");
 
-  if (role !== "GM") {
-    await OBR.notification.show("Apenas o GM pode ativar.", "WARNING");
-    return;
-  }
+      await testOverlay(color);
+    };
 
-  const color = picker.value;
+    async function testOverlay(color) {
+      const svg = `
+      <svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024">
+        <rect x="0" y="0" width="1024" height="1024"
+              fill="none"
+              stroke="${color}"
+              stroke-width="50"/>
+      </svg>
+      `;
 
-  // Salva nos metadados
-  await OBR.scene.setMetadata({
-    "color-border:color": color,
-    "color-border:active": true
-  });
+      const encoded = btoa(svg);
 
-  await applyOverlay(color);
-};
+      await OBR.scene.local.addItems([
+        {
+          id: "debug-overlay",
+          type: "IMAGE",
+          image: {
+            url: "data:image/svg+xml;base64," + encoded
+          },
+          width: 5000,
+          height: 5000
+        }
+      ]);
 
-// Escuta mudanças de metadata
-OBR.scene.onMetadataChange(async (meta) => {
-  if (meta["color-border:active"]) {
-    await applyOverlay(meta["color-border:color"]);
-  }
-});
-
-async function applyOverlay(color) {
-  await clearOverlay();
-
-  const svg = `
-  <svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024">
-    <rect x="0" y="0" width="1024" height="1024"
-          fill="none"
-          stroke="${color}"
-          stroke-width="40"/>
-  </svg>
-  `;
-
-  const encoded = btoa(svg);
-
-  await OBR.scene.local.addItems([
-    {
-      id: OVERLAY_ID,
-      type: "IMAGE",
-      image: {
-        url: `data:image/svg+xml;base64,${encoded}`
-      },
-      width: 100000,
-      height: 100000
+      await OBR.notification.show("Overlay attempt done", "INFO");
     }
-  ]);
-
-  await OBR.notification.show("Borda aplicada!", "INFO");
-}
-async function clearOverlay() {
-  await OBR.scene.local.deleteItems([OVERLAY_ID]);
-}
+  } catch (err) {
+    console.error("Erro no plugin:", err);
+    alert("Erro: " + err.message);
+  }
+})();
