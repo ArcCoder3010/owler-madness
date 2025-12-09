@@ -33,19 +33,20 @@ async function applyVignette() {
     uniform vec3 tint;
 
     half4 main(float2 coord) {
-      vec2 viewCoord = (vec3(coord, 1) * view).xy;
-      vec2 p = viewCoord / size;
-      p = p * 2.0 - 1.0;
+  vec2 viewCoord = (vec3(coord, 1) * view).xy;
+  vec2 p = viewCoord / size;
+  p = p * 2.0 - 1.0;
 
-      float d = length(p);
+  float d = length(p);
 
-      float inner = ${size};
-      float outer = 1.0;
+  float inner = ${size};
+  float outer = 1.0;
 
-      float alpha = smoothstep(inner, outer, d);
+  // Hard cut hole in center + fade band
+  float ring = smoothstep(inner, outer, d) * step(inner, d);
 
-      return half4(tint, alpha * ${intensity});
-    }
+  return half4(tint, ring * ${intensity});
+}
   `;
 
   const effect = buildEffect()
