@@ -5,6 +5,8 @@ await OBR.onReady();
 const btnOn = document.getElementById("activate");
 const btnOff = document.getElementById("deactivate");
 const picker = document.getElementById("colorPicker");
+const sizeSlider = document.getElementById("sizeSlider");
+const intensitySlider = document.getElementById("intensitySlider");
 
 const EFFECT_ID = "color-vignette-effect";
 
@@ -15,32 +17,17 @@ function hexToVec3(hex) {
   return { x: r, y: g, z: b };
 }
 
-// ===================== ACTIVATE =====================
-btnOn.onclick = async () => {
-  try {
-    await OBR.notification.show("Hello World!", "SUCCESS");
-  } catch {}
-
+// ================= ACTIVATE / UPDATE =================
+async function applyVignette() {
   const hex = picker.value || "#000000";
   const color = hexToVec3(hex);
+  const size = parseFloat(sizeSlider.value);
+  const intensity = parseFloat(intensitySlider.value);
 
-  await applyVignette(color);
-};
-
-// ===================== DEACTIVATE =====================
-btnOff.onclick = async () => {
-  try {
-    await OBR.scene.local.deleteItems([EFFECT_ID]);
-    await OBR.notification.show("Vignette removed ✅", "SUCCESS");
-  } catch {}
-};
-
-async function applyVignette(colorVec3) {
   try {
     await OBR.scene.local.deleteItems([EFFECT_ID]);
   } catch {}
 
-  // SMALLER VIGNETTE: changed smoothstep values
   const sksl = `
     uniform vec2 size;
     uniform mat3 view;
@@ -53,17 +40,17 @@ async function applyVignette(colorVec3) {
 
       float d = length(p);
 
-      // Smaller effect (tighter edges)
-      float alpha = smoothstep(0.65, 1.0, d);
+      // Size controlled by slider
+      float alpha = smoothstep(${size}, 1.0, d);
 
-      return half4(tint, alpha * 0.7);
+      return half4(tint, alpha * ${intensity});
     }
   `;
 
   const effect = buildEffect()
     .id(EFFECT_ID)
     .effectType("VIEWPORT")
-    .uniforms([{ name: "tint", value: colorVec3 }])
+    .uniforms([{ name: "tint", value: color }])
     .sksl(sksl)
     .locked(true)
     .disableHit(true)
@@ -71,3 +58,23 @@ async function applyVignette(colorVec3) {
 
   await OBR.scene.local.addItems([effect]);
 }
+
+// ============== BUTTONS ==============
+btnOn.onclick = async () => {
+  try {
+    await OBR.notification.show("Vignette applied ✅", "SUCCESS");
+  } catch {}
+  await applyVignette();
+};
+
+btnOff.onclick = async () => {
+  try {
+    await OBR.scene.local.deleteItems([EFFECT_ID]);
+    await OBR.notification.show("Vignette removed ✅", "SUCCESS");
+  } catch {}
+};
+
+// ============== LIVE UPDATE WHILE SLIDING ==============
+sizeSlider.oninput = applyVignette;
+intensitySlider.oninput = applyVignette;
+picker.oninput = applyVignette;
