@@ -42,8 +42,14 @@ async function applyVignette() {
   float inner = ${size};
   float outer = 1.0;
 
-  // Hard cut hole in center + fade band
-  float ring = smoothstep(inner, outer, d) * step(inner, d);
+  // Fade at outer edge
+  float outerFade = smoothstep(inner, outer, d);
+
+  // Fade for inner cutout
+  float innerFade = smoothstep(inner - 0.02, inner, d);
+
+  // True ring mask (no tint in center)
+  float ring = outerFade - innerFade;
 
   return half4(tint, ring * ${intensity});
 }
