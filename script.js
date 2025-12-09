@@ -17,7 +17,6 @@ function hexToVec3(hex) {
   return { x: r, y: g, z: b };
 }
 
-// ================= ACTIVATE / UPDATE =================
 async function applyVignette() {
   const hex = picker.value || "#000000";
   const color = hexToVec3(hex);
@@ -40,8 +39,10 @@ async function applyVignette() {
 
       float d = length(p);
 
-      // Size controlled by slider
-      float alpha = smoothstep(${size}, 1.0, d);
+      float inner = ${size};
+      float outer = 1.0;
+
+      float alpha = smoothstep(inner, outer, d);
 
       return half4(tint, alpha * ${intensity});
     }
@@ -59,22 +60,14 @@ async function applyVignette() {
   await OBR.scene.local.addItems([effect]);
 }
 
-// ============== BUTTONS ==============
-btnOn.onclick = async () => {
-  try {
-    await OBR.notification.show("Vignette applied ✅", "SUCCESS");
-  } catch {}
-  await applyVignette();
-};
+// Buttons
+btnOn.onclick = applyVignette;
 
 btnOff.onclick = async () => {
-  try {
-    await OBR.scene.local.deleteItems([EFFECT_ID]);
-    await OBR.notification.show("Vignette removed ✅", "SUCCESS");
-  } catch {}
+  await OBR.scene.local.deleteItems([EFFECT_ID]);
 };
 
-// ============== LIVE UPDATE WHILE SLIDING ==============
+// Live update
 sizeSlider.oninput = applyVignette;
 intensitySlider.oninput = applyVignette;
 picker.oninput = applyVignette;
